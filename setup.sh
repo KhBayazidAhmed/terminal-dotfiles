@@ -61,7 +61,7 @@ def load_jsonc(text: str) -> dict:
     for line in text.splitlines():
         if line.lstrip().startswith("//"):
             continue
-        lines.append(re.sub(r"//.*$", "", line))
+        lines.append(line)
     content = "\n".join(lines)
     content = re.sub(r",(\s*[}\]])", r"\1", content)
     return json.loads(content)
