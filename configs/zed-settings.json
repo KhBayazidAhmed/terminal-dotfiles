@@ -1,15 +1,5 @@
 {
-  "autosave": "on_focus_change",
-  "cursor_shape": "bar",
   "terminal": {
-    "font_family": "MesloLGS NF",
-    "font_size": 16.0,
-    "line_height": "comfortable",
-    "cursor_shape": "bar",
-    "blinking": "on",
-    "shell": {
-      "program": "/bin/zsh"
-    },
-    "working_directory": "current_project_directory"
+    "font_size": 16.0
   }
 }

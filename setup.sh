@@ -84,6 +84,11 @@ target = Path(sys.argv[1])
 patch = load_jsonc(Path(sys.argv[2]).read_text())
 current = load_jsonc(target.read_text())
 deep_merge(current, patch)
+if "terminal" in patch:
+    terminal = current.setdefault("terminal", {})
+    for key in ("font_family", "line_height"):
+        if key not in patch["terminal"] and key in terminal:
+            del terminal[key]
 target.write_text(json.dumps(current, indent=2) + "\n")
 PY
     echo "==> Zed terminal settings merged into existing config"

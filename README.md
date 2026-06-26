@@ -87,8 +87,8 @@ cmux is a Ghostty-based macOS terminal. Terminal rendering uses **Ghostty config
 | Setting | Value |
 |---|---|
 | Theme | `Detuned` |
-| Font | `MesloLGS NF` |
-| Font size | `18` |
+| Font | System default (no override) |
+| Font size | `20` (thickened) |
 | Cursor | Bar, blinking |
 | Window | Maximized on launch |
 | Subtitle | Working directory |
@@ -115,26 +115,14 @@ brew install --cask cmux
 
 **Config file:** `~/.config/zed/settings.json`
 
-The repo ships a **terminal-only** Zed config (no API keys or agent settings):
+Zed terminal uses the **default Zed mono font** (no `font_family` override):
 
 | Setting | Value |
 |---|---|
-| Terminal font | `MesloLGS NF` |
+| Terminal font | Zed default (`.ZedMono`) |
 | Terminal font size | `16` |
-| Line height | `comfortable` |
-| Cursor | Bar, blinking |
-| Shell | `/bin/zsh` |
-| Working directory | Current project directory |
 
-**Why icons broke before:** Zed terminal had no `font_family` set. cmux and Zed each need their own font setting (cmux via `~/.config/ghostty/config`, Zed via `settings.json`).
-
-**Test icons in Zed terminal:**
-
-```bash
-echo "󰀵  󰉋  󰘬"
-```
-
-Merge your own Zed editor/agent settings into `~/.config/zed/settings.json` after setup — the repo config only covers terminal essentials.
+Powerlevel10k icons may not render in Zed terminal without a Nerd Font — that is expected with this setup. cmux uses its own font from `~/.config/ghostty/config`.
 
 ---
 
