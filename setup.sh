@@ -21,7 +21,12 @@ if [[ "$(uname)" == "Darwin" ]] && ! [[ -d "/Applications/Ghostty.app" ]]; then
 fi
 
 mkdir -p "$HOME/Library/Application Support/com.mitchellh.ghostty"
-cp "$CONFIGS/ghostty-config" "$HOME/Library/Application Support/com.mitchellh.ghostty/config"
+GHOSTTY_CONFIG="$HOME/Library/Application Support/com.mitchellh.ghostty/config"
+if [[ -f "$GHOSTTY_CONFIG" ]]; then
+  cp "$GHOSTTY_CONFIG" "${GHOSTTY_CONFIG}.bak.$(date +%Y%m%d%H%M%S)"
+  echo "    Backed up Ghostty config"
+fi
+cp "$CONFIGS/ghostty-config" "$GHOSTTY_CONFIG"
 echo "==> Ghostty config installed"
 
 # Oh My Zsh

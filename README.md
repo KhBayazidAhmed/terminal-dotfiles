@@ -17,6 +17,42 @@ chmod +x setup.sh
 
 Then open **Ghostty** (or run `exec zsh` in any terminal).
 
+## Remove config
+
+Undo everything `setup.sh` applied:
+
+```bash
+cd terminal-dotfiles
+chmod +x remove.sh
+./remove.sh
+```
+
+| Option | What it does |
+|---|---|
+| `./remove.sh` | Restore shell + Ghostty backups, remove plugins/theme, clear p10k cache |
+| `./remove.sh -y` | Same, no confirmation prompt |
+| `./remove.sh --purge` | Also uninstall Ghostty app + Nerd Font via Homebrew |
+
+**Not removed:** Homebrew, Oh My Zsh, the cloned repo folder.
+
+`setup.sh` saves timestamped backups before overwriting (e.g. `~/.zshrc.bak.20260626120000`). `remove.sh` restores the newest backup for each file.
+
+### Manual remove (no script)
+
+```bash
+# Restore latest backup (example for .zshrc)
+cp "$(ls -t ~/.zshrc.bak.* | head -1)" ~/.zshrc
+
+rm -f ~/.p10k.zsh
+rm -f ~/Library/Application\ Support/com.mitchellh.ghostty/config
+rm -rf ~/.oh-my-zsh/custom/themes/powerlevel10k
+rm -rf ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+rm -rf ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+rm -f ~/.cache/p10k-instant-prompt-*.zsh
+
+exec zsh
+```
+
 ### What `setup.sh` does
 
 1. Installs **Homebrew** (if missing)
@@ -153,6 +189,7 @@ Add to `~/.zshrc` before `source $ZSH/oh-my-zsh.sh`.
 terminal-dotfiles/
 ├── README.md              # This file
 ├── setup.sh               # One-command new device setup
+├── remove.sh              # Undo setup / restore backups
 └── configs/
     ├── ghostty-config     # Ghostty terminal settings
     ├── zshrc              # Main shell config
