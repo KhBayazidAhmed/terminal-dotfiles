@@ -66,7 +66,7 @@ exec zsh
 7. Installs **Oh My Zsh** (if missing)
 8. Clones **powerlevel10k**, **zsh-autosuggestions**, **zsh-syntax-highlighting**
 9. Backs up and installs `~/.zshrc`, `~/.zprofile`, `~/.p10k.zsh`
-10. Installs **MesloLGS Nerd Font** (for prompt icons in cmux + Zed)
+10. Installs **FiraCode Nerd Font** (prompt icons + ligatures in cmux + Zed)
 
 ### After setup
 
@@ -87,8 +87,8 @@ cmux is a Ghostty-based macOS terminal. Terminal rendering uses **Ghostty config
 | Setting | Value |
 |---|---|
 | Theme | `Detuned` |
-| Font | `MesloLGS NF` (Powerlevel10k icons) |
-| Font size | `20` (thickened) |
+| Font | `FiraCode Nerd Font` |
+| Font size | `14` |
 | Cursor | Bar, blinking |
 | Window | Maximized on launch |
 | Subtitle | Working directory |
@@ -119,8 +119,8 @@ The repo ships a **terminal-only** Zed config (no API keys or agent settings):
 
 | Setting | Value |
 |---|---|
-| Terminal font | `MesloLGS NF` (required for Powerlevel10k icons) |
-| Terminal font size | `16` |
+| Terminal font | `FiraCode Nerd Font` |
+| Terminal font size | `14` |
 | Line height | `standard` (better for prompts / box drawing) |
 | Cursor | Bar, blinking |
 | Shell | `/bin/zsh` |
@@ -236,7 +236,6 @@ terminal-dotfiles/
 ├── README.md              # This file
 ├── setup.sh               # Install + apply configs on a new device
 ├── remove.sh              # Undo setup / restore backups
-├── sync.sh                # Safe machine → repo sync (no secrets)
 └── configs/
     ├── cmux-terminal-config  # cmux terminal settings (Ghostty config format)
     ├── zed-settings.json  # Zed terminal font + shell settings
@@ -247,89 +246,17 @@ terminal-dotfiles/
 
 ---
 
-## Sync guideline
+## Update repo
 
-This repo is **public** and **terminal-only**. Follow these rules so personal data never gets pushed.
-
-### Safe to sync (included in repo)
-
-| Repo file | Live file | How to update |
-|---|---|---|
-| `configs/cmux-terminal-config` | `~/.config/ghostty/config` | Auto-copied by `sync.sh` |
-| `configs/p10k.zsh` | `~/.p10k.zsh` | Auto-copied by `sync.sh` |
-| `configs/zshrc` | `~/.zshrc` | Edit in repo only |
-| `configs/zprofile` | `~/.zprofile` | Edit in repo only |
-| `configs/zed-settings.json` | `~/.config/zed/settings.json` | Edit terminal block in repo only |
-
-### Never sync (keep on your machine)
-
-| File | Why |
-|---|---|
-| Full `~/.config/zed/settings.json` | API keys, agents, MCP, language models |
-| Live `~/.zshrc` | Dev tool PATH (pnpm, bun, grok, dex, etc.) |
-| `~/.config/cmux/cmux.json` | App shortcuts, automation, personal prefs |
-| `~/.claude/`, `~/.cursor/`, tokens | Credentials |
-| Backup files (`*.bak.*`) | Old personal configs |
-
-### Push changes (this Mac → GitHub)
+Edit files in `configs/` directly, then:
 
 ```bash
-cd terminal-dotfiles
-chmod +x sync.sh
-./sync.sh          # copies safe files + checks for secrets
-git diff           # review before committing
-git add -A
-git commit -m "Update terminal configs"
-git push
+git add -A && git commit -m "Update configs" && git push
 ```
 
-`sync.sh` copies cmux + p10k configs and blocks push if `zed-settings.json` contains suspicious keys.
+On another device: `git pull && ./setup.sh`
 
-### Pull changes (GitHub → another Mac)
-
-```bash
-cd terminal-dotfiles
-git pull
-./setup.sh         # backs up live files, then applies repo configs
-```
-
-### Pre-push checklist
-
-- [ ] Ran `./sync.sh` (or manually updated only safe files)
-- [ ] `git diff` shows no API keys, tokens, or `/Users/yourname` paths
-- [ ] `configs/zed-settings.json` contains **only** `terminal`, `cursor_shape`, `autosave`
-- [ ] Did **not** `cp ~/.zshrc configs/zshrc`
-- [ ] Did **not** `cp ~/.config/zed/settings.json configs/zed-settings.json`
-
-### Update Zed terminal settings safely
-
-Edit `configs/zed-settings.json` directly — keep it like this:
-
-```json
-{
-  "autosave": "on_focus_change",
-  "cursor_shape": "bar",
-  "terminal": {
-    "font_family": "MesloLGS NF",
-    "font_size": 16.0,
-    "line_height": "standard",
-    "cursor_shape": "bar",
-    "blinking": "on",
-    "shell": { "program": "/bin/zsh" },
-    "working_directory": "current_project_directory"
-  }
-}
-```
-
-Your full Zed config (agents, API URLs, MCP) stays in `~/.config/zed/settings.json` on each machine only.
-
-### Reconfigure Powerlevel10k
-
-```bash
-p10k configure
-./sync.sh
-git add configs/p10k.zsh && git commit -m "Update p10k prompt" && git push
-```
+Do **not** copy live `~/.zshrc` or full `~/.config/zed/settings.json` into the repo (may contain API keys and personal paths).
 
 ---
 

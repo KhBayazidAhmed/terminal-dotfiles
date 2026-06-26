@@ -21,7 +21,7 @@ Undo what setup.sh installed. Restores shell config backups when available.
 
 Options:
   -y, --yes   Skip confirmation prompt
-  --purge     Also uninstall cmux, Zed, and MesloLGS Nerd Font (Homebrew)
+  --purge     Also uninstall cmux, Zed, and FiraCode Nerd Font (Homebrew)
   -h, --help  Show this help
 
 Does NOT uninstall Homebrew or Oh My Zsh.
@@ -44,7 +44,7 @@ if [[ "$YES" != true ]]; then
   echo "  - Clear Powerlevel10k instant-prompt cache"
   echo "  - Remove ~/.local/bin/cmux symlink"
   if [[ "$PURGE" == true ]]; then
-    echo "  - Uninstall cmux + Zed + MesloLGS Nerd Font (brew)"
+    echo "  - Uninstall cmux + Zed + FiraCode Nerd Font (brew)"
   fi
   echo ""
   read -r -p "Continue? [y/N] " reply
@@ -115,9 +115,9 @@ if [[ "$PURGE" == true ]] && command -v brew >/dev/null 2>&1; then
     brew uninstall --cask zed
     echo "==> Uninstalled Zed"
   fi
-  if brew list --cask font-meslo-lg-nerd-font &>/dev/null; then
-    brew uninstall --cask font-meslo-lg-nerd-font
-    echo "==> Uninstalled MesloLGS Nerd Font"
+  if brew list --cask font-fira-code-nerd-font &>/dev/null; then
+    brew uninstall --cask font-fira-code-nerd-font
+    echo "==> Uninstalled FiraCode Nerd Font"
   fi
 fi
 
