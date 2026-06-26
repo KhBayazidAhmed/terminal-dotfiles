@@ -1,0 +1,38 @@
+{
+  "agent_ui_font_size": 18.0,
+  "agent_buffer_font_size": 18.0,
+  "ui_font_weight": 400.0,
+  "buffer_font_family": "JetBrains Mono",
+  "buffer_line_height": "comfortable",
+  "buffer_font_weight": 400.0,
+  "ui_font_family": "JetBrains Mono",
+  "icon_theme": "Material Icon Theme",
+  "diff_view_style": "unified",
+  "cli_default_open_behavior": "new_window",
+  "ui_font_size": 18.0,
+  "buffer_font_size": 18.0,
+  "theme": {
+    "mode": "system",
+    "light": "One Light",
+    "dark": "One Dark"
+  },
+  "minimap": {
+    "show": "never"
+  },
+  "show_whitespaces": "selection",
+  "autosave": "on_focus_change",
+  "cursor_shape": "bar",
+  "colorize_brackets": true,
+  "terminal": {
+    "font_weight": 600.0,
+    "font_family": "JetBrainsMonoNL Nerd Font",
+    "font_size": 18.0,
+    "line_height": "comfortable",
+    "cursor_shape": "bar",
+    "blinking": "on",
+    "shell": {
+      "program": "/bin/zsh"
+    },
+    "working_directory": "current_project_directory"
+  }
+}
