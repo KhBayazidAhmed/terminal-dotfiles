@@ -52,13 +52,38 @@ if [[ "$(uname)" == "Darwin" ]]; then
     cp "$ZED_SETTINGS" "${ZED_SETTINGS}.bak.$(date +%Y%m%d%H%M%S)"
     echo "    Backed up Zed settings"
     python3 - "$ZED_SETTINGS" "$CONFIGS/zed-settings.json" <<'PY'
-import json, sys
+import json, re, sys
 from pathlib import Path
 
+
+def load_jsonc(text: str) -> dict:
+    lines = []
+    for line in text.splitlines():
+        if line.lstrip().startswith("//"):
+            continue
+        lines.append(re.sub(r"//.*$", "", line))
+    content = "\n".join(lines)
+    content = re.sub(r",(\s*[}\]])", r"\1", content)
+    return json.loads(content)
+
+
+def deep_merge(base: dict, patch: dict) -> dict:
+    for key, value in patch.items():
+        if (
+            key in base
+            and isinstance(base[key], dict)
+            and isinstance(value, dict)
+        ):
+            deep_merge(base[key], value)
+        else:
+            base[key] = value
+    return base
+
+
 target = Path(sys.argv[1])
-patch = json.loads(Path(sys.argv[2]).read_text())
-current = json.loads(target.read_text())
-current.update(patch)
+patch = load_jsonc(Path(sys.argv[2]).read_text())
+current = load_jsonc(target.read_text())
+deep_merge(current, patch)
 target.write_text(json.dumps(current, indent=2) + "\n")
 PY
     echo "==> Zed terminal settings merged into existing config"
