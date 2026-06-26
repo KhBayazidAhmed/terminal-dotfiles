@@ -27,19 +27,11 @@ Then open **Ghostty** (or run `exec zsh` in any terminal).
 6. Backs up and installs `~/.zshrc`, `~/.zprofile`, `~/.p10k.zsh`
 7. Installs **MesloLGS Nerd Font** (for prompt icons)
 
-### Manual steps after setup
-
-Install any tools you use that add PATH/completions in `configs/zshrc`:
-
-| Tool | Install |
-|---|---|
-| bun | `curl -fsSL https://bun.sh/install \| bash` |
-| pnpm | `brew install pnpm` |
-| rustup | `brew install rustup` |
-| grok CLI | Follow Grok installer |
-| dex | Your dex install method |
+### After setup
 
 Set Ghostty font to **MesloLGS Nerd Font** if prompt icons show as boxes.
+
+This repo is **terminal-only** — no dev tool PATH or completions (pnpm, bun, rust, grok, dex, etc.). Add those in a separate shell config on each machine if you need them.
 
 ---
 
@@ -71,7 +63,7 @@ Set Ghostty font to **MesloLGS Nerd Font** if prompt icons show as boxes.
 ```
 .zprofile  →  Homebrew
      ↓
-.zshrc     →  p10k instant prompt → Oh My Zsh → plugins → ~/.p10k.zsh → tool completions
+.zshrc     →  p10k instant prompt → Oh My Zsh → plugins → ~/.p10k.zsh
 ```
 
 ### Prompt — Powerlevel10k
@@ -153,8 +145,6 @@ Add to `~/.zshrc` before `source $ZSH/oh-my-zsh.sh`.
 | `auto_menu` | Second Tab opens full menu |
 | `use-cache` | Faster repeat completions |
 
-**Extra completions** (when tools are installed): bun, dex, grok.
-
 ---
 
 ## File map
@@ -179,11 +169,11 @@ After editing configs on your machine:
 ```bash
 cd terminal-dotfiles
 
-# Update repo copies from live configs (optional helper)
+# Update repo copies from live configs
 cp ~/Library/Application\ Support/com.mitchellh.ghostty/config configs/ghostty-config
-cp ~/.zshrc configs/zshrc
-cp ~/.zprofile configs/zprofile
 cp ~/.p10k.zsh configs/p10k.zsh
+# Edit configs/zshrc and configs/zprofile directly — do not copy from ~/.zshrc
+# (your live shell may have extra dev-tool PATH entries)
 
 git add -A
 git commit -m "Update terminal configs"
