@@ -38,66 +38,6 @@ if [[ "$(uname)" == "Darwin" ]]; then
   fi
 fi
 
-# Zed
-if [[ "$(uname)" == "Darwin" ]]; then
-  if ! [[ -d "/Applications/Zed.app" ]]; then
-    echo "==> Installing Zed..."
-    brew install --cask zed || echo "    Install Zed manually: https://zed.dev"
-  fi
-
-  ZED_CONFIG_DIR="$HOME/.config/zed"
-  ZED_SETTINGS="$ZED_CONFIG_DIR/settings.json"
-  mkdir -p "$ZED_CONFIG_DIR"
-  if [[ -f "$ZED_SETTINGS" ]]; then
-    cp "$ZED_SETTINGS" "${ZED_SETTINGS}.bak.$(date +%Y%m%d%H%M%S)"
-    echo "    Backed up Zed settings"
-    python3 - "$ZED_SETTINGS" "$CONFIGS/zed-settings.json" <<'PY'
-import json, re, sys
-from pathlib import Path
-
-
-def load_jsonc(text: str) -> dict:
-    lines = []
-    for line in text.splitlines():
-        if line.lstrip().startswith("//"):
-            continue
-        lines.append(line)
-    content = "\n".join(lines)
-    content = re.sub(r",(\s*[}\]])", r"\1", content)
-    return json.loads(content)
-
-
-def deep_merge(base: dict, patch: dict) -> dict:
-    for key, value in patch.items():
-        if (
-            key in base
-            and isinstance(base[key], dict)
-            and isinstance(value, dict)
-        ):
-            deep_merge(base[key], value)
-        else:
-            base[key] = value
-    return base
-
-
-target = Path(sys.argv[1])
-patch = load_jsonc(Path(sys.argv[2]).read_text())
-current = load_jsonc(target.read_text())
-deep_merge(current, patch)
-if "terminal" in patch:
-    terminal = current.setdefault("terminal", {})
-    for key in ("font_family", "line_height"):
-        if key not in patch["terminal"] and key in terminal:
-            del terminal[key]
-target.write_text(json.dumps(current, indent=2) + "\n")
-PY
-    echo "==> Zed terminal settings merged into existing config"
-  else
-    cp "$CONFIGS/zed-settings.json" "$ZED_SETTINGS"
-    echo "==> Zed settings installed (~/.config/zed/settings.json)"
-  fi
-fi
-
 # Oh My Zsh
 if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
   echo "==> Installing Oh My Zsh..."
@@ -139,15 +79,7 @@ cp "$CONFIGS/zprofile" "$HOME/.zprofile"
 cp "$CONFIGS/p10k.zsh" "$HOME/.p10k.zsh"
 echo "==> zsh configs installed"
 
-# Nerd Font (required for Powerlevel10k icons)
-if [[ "$(uname)" == "Darwin" ]]; then
-  if ! brew list --cask font-meslo-lg-nerd-font &>/dev/null; then
-    echo "==> Installing MesloLGS Nerd Font..."
-    brew install --cask font-meslo-lg-nerd-font || true
-  fi
-  echo "    MesloLGS NF is used by cmux + Zed terminal for Powerlevel10k icons."
-fi
-
 echo ""
-echo "Done! Open cmux or Zed terminal, or run: exec zsh"
+echo "Done! Open cmux, or run: exec zsh"
+echo "Zed settings are not managed by this repo — configure ~/.config/zed/settings.json yourself."
 echo "Docs: $REPO_DIR/README.md"

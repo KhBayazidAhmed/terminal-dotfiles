@@ -3,7 +3,6 @@ set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CMUX_TERMINAL_CONFIG="$HOME/.config/ghostty/config"
-ZED_SETTINGS="$HOME/.config/zed/settings.json"
 ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
 
 YES=false
@@ -21,10 +20,10 @@ Undo what setup.sh installed. Restores shell config backups when available.
 
 Options:
   -y, --yes   Skip confirmation prompt
-  --purge     Also uninstall cmux, Zed, and MesloLGS Nerd Font (Homebrew)
+  --purge     Also uninstall cmux (Homebrew)
   -h, --help  Show this help
 
-Does NOT uninstall Homebrew or Oh My Zsh.
+Does NOT uninstall Homebrew, Oh My Zsh, or Zed.
 EOF
       exit 0
       ;;
@@ -39,12 +38,11 @@ if [[ "$YES" != true ]]; then
   echo "This will:"
   echo "  - Restore ~/.zshrc, ~/.zprofile, ~/.p10k.zsh from backups (or delete if no backup)"
   echo "  - Restore/remove cmux terminal config"
-  echo "  - Restore/remove Zed config"
   echo "  - Remove powerlevel10k, zsh-autosuggestions, zsh-syntax-highlighting from Oh My Zsh"
   echo "  - Clear Powerlevel10k instant-prompt cache"
   echo "  - Remove ~/.local/bin/cmux symlink"
   if [[ "$PURGE" == true ]]; then
-    echo "  - Uninstall cmux + Zed + MesloLGS Nerd Font (brew)"
+    echo "  - Uninstall cmux (brew)"
   fi
   echo ""
   read -r -p "Continue? [y/N] " reply
@@ -70,18 +68,7 @@ restore_latest_backup() {
 restore_latest_backup "$HOME/.zshrc"
 restore_latest_backup "$HOME/.zprofile"
 restore_latest_backup "$HOME/.p10k.zsh"
-
 restore_latest_backup "$CMUX_TERMINAL_CONFIG"
-
-latest_zed="$(ls -t "${ZED_SETTINGS}.bak."* 2>/dev/null | head -1 || true)"
-if [[ -n "$latest_zed" ]]; then
-  mkdir -p "$(dirname "$ZED_SETTINGS")"
-  cp "$latest_zed" "$ZED_SETTINGS"
-  echo "==> Restored Zed settings from $(basename "$latest_zed")"
-elif [[ -f "$ZED_SETTINGS" ]]; then
-  rm "$ZED_SETTINGS"
-  echo "==> Removed Zed settings (no backup found)"
-fi
 
 remove_dir_if_exists() {
   local dir="$1" label="$2"
@@ -110,14 +97,6 @@ if [[ "$PURGE" == true ]] && command -v brew >/dev/null 2>&1; then
   if brew list --cask cmux &>/dev/null; then
     brew uninstall --cask cmux
     echo "==> Uninstalled cmux"
-  fi
-  if brew list --cask zed &>/dev/null; then
-    brew uninstall --cask zed
-    echo "==> Uninstalled Zed"
-  fi
-  if brew list --cask font-meslo-lg-nerd-font &>/dev/null; then
-    brew uninstall --cask font-meslo-lg-nerd-font
-    echo "==> Uninstalled MesloLGS Nerd Font"
   fi
 fi
 

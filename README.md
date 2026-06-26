@@ -1,6 +1,8 @@
 # Terminal Dotfiles
 
-Personal terminal setup: **cmux** + **Zed** + **zsh** + **Oh My Zsh** + **Powerlevel10k** + suggestion plugins.
+Personal terminal setup: **cmux** + **zsh** + **Oh My Zsh** + **Powerlevel10k** + suggestion plugins.
+
+**Zed is not included** — configure `~/.config/zed/settings.json` separately on each machine.
 
 Repo: [github.com/KhBayazidAhmed/terminal-dotfiles](https://github.com/KhBayazidAhmed/terminal-dotfiles)
 
@@ -15,7 +17,7 @@ chmod +x setup.sh
 ./setup.sh
 ```
 
-Then open **cmux** or **Zed** terminal (or run `exec zsh` in any terminal).
+Then open **cmux** (or run `exec zsh` in any terminal).
 
 ## Remove config
 
@@ -29,9 +31,9 @@ chmod +x remove.sh
 
 | Option | What it does |
 |---|---|
-| `./remove.sh` | Restore shell + cmux/Zed backups, remove plugins/theme, clear p10k cache |
+| `./remove.sh` | Restore shell + cmux backups, remove plugins/theme, clear p10k cache |
 | `./remove.sh -y` | Same, no confirmation prompt |
-| `./remove.sh --purge` | Also uninstall cmux, Zed, and Nerd Font via Homebrew |
+| `./remove.sh --purge` | Also uninstall cmux via Homebrew |
 
 **Not removed:** Homebrew, Oh My Zsh, the cloned repo folder.
 
@@ -46,7 +48,6 @@ cp "$(ls -t ~/.zshrc.bak.* | head -1)" ~/.zshrc
 rm -f ~/.p10k.zsh
 rm -f ~/.config/ghostty/config
 rm -f ~/.local/bin/cmux
-rm -f ~/.config/zed/settings.json
 rm -rf ~/.oh-my-zsh/custom/themes/powerlevel10k
 rm -rf ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 rm -rf ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
@@ -59,20 +60,15 @@ exec zsh
 
 1. Installs **Homebrew** (if missing)
 2. Installs **cmux** via Homebrew tap + cask (macOS)
-3. Installs **Zed** via Homebrew cask (macOS)
-4. Copies terminal config to `~/.config/ghostty/config` (cmux reads this)
-5. Links **cmux CLI** to `~/.local/bin/cmux`
-6. Merges Zed **terminal-only** settings into `~/.config/zed/settings.json`
-7. Installs **Oh My Zsh** (if missing)
-8. Clones **powerlevel10k**, **zsh-autosuggestions**, **zsh-syntax-highlighting**
-9. Backs up and installs `~/.zshrc`, `~/.zprofile`, `~/.p10k.zsh`
-10. Installs **MesloLGS Nerd Font** (Powerlevel10k icons in cmux + Zed)
+3. Copies terminal config to `~/.config/ghostty/config` (cmux reads this)
+4. Links **cmux CLI** to `~/.local/bin/cmux`
+5. Installs **Oh My Zsh** (if missing)
+6. Clones **powerlevel10k**, **zsh-autosuggestions**, **zsh-syntax-highlighting**
+7. Backs up and installs `~/.zshrc`, `~/.zprofile`, `~/.p10k.zsh`
 
 ### After setup
 
-Restart cmux or Zed, or run `cmux reload-config` after editing terminal config.
-
-Restart Zed terminal tab (`Ctrl+~`) so the Nerd Font loads there too.
+Restart cmux or run `cmux reload-config` after editing terminal config.
 
 This repo is **terminal-only** — no dev tool PATH or completions (pnpm, bun, rust, grok, dex, etc.). Add those in a separate shell config on each machine if you need them.
 
@@ -108,21 +104,6 @@ cmux is a Ghostty-based macOS terminal. Terminal rendering uses **Ghostty config
 brew tap manaflow-ai/cmux
 brew install --cask cmux
 ```
-
----
-
-## Zed settings
-
-**Config file:** `~/.config/zed/settings.json`
-
-Zed terminal uses the **default Zed mono font** (no `font_family` override):
-
-| Setting | Value |
-|---|---|
-| Terminal font | Zed default (`.ZedMono`) |
-| Terminal font size | `16` |
-
-Powerlevel10k icons may not render in Zed terminal without a Nerd Font — that is expected with this setup. cmux uses its own font from `~/.config/ghostty/config`.
 
 ---
 
@@ -226,7 +207,6 @@ terminal-dotfiles/
 ├── remove.sh              # Undo setup / restore backups
 └── configs/
     ├── cmux-terminal-config  # cmux terminal settings (Ghostty config format)
-    ├── zed-settings.json  # Zed terminal font + shell settings
     ├── zshrc              # Main shell config
     ├── zprofile           # Login shell (Homebrew)
     └── p10k.zsh           # Powerlevel10k prompt config
@@ -244,10 +224,6 @@ git add -A && git commit -m "Update configs" && git push
 
 On another device: `git pull && ./setup.sh`
 
-Do **not** copy live `~/.zshrc` or full `~/.config/zed/settings.json` into the repo (may contain API keys and personal paths).
+Do **not** copy live `~/.zshrc` into the repo (may contain personal paths).
 
----
-
-## VS Code / Cursor external terminal
-
-If using Cursor or VS Code with an external terminal, point it at **cmux** instead of the built-in panel. cmux does not replace Zed's integrated terminal — Zed still needs `terminal.font_family` in its own settings.
+**Zed:** not synced by this repo. Keep `~/.config/zed/settings.json` local on each machine.
