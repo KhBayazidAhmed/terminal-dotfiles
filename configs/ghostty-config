@@ -1,0 +1,15 @@
+desktop-notifications = false
+maximize = true
+image-storage-limit = 319999999
+window-subtitle = working-directory
+window-padding-x = 10
+window-padding-y = 5
+window-padding-balance = true
+theme = Detuned
+bold-is-bright = true
+cursor-style = bar
+cursor-style-blink = true
+font-size = 20
+font-thicken = true
+auto-update = off
+keybind = shift+enter=text:\x1b\r
