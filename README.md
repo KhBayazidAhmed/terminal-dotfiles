@@ -1,6 +1,6 @@
 # Terminal Dotfiles
 
-Personal terminal setup: **Ghostty** + **Zed** + **zsh** + **Oh My Zsh** + **Powerlevel10k** + suggestion plugins.
+Personal terminal setup: **cmux** + **Zed** + **zsh** + **Oh My Zsh** + **Powerlevel10k** + suggestion plugins.
 
 Repo: [github.com/KhBayazidAhmed/terminal-dotfiles](https://github.com/KhBayazidAhmed/terminal-dotfiles)
 
@@ -15,7 +15,7 @@ chmod +x setup.sh
 ./setup.sh
 ```
 
-Then open **Ghostty** or **Zed** terminal (or run `exec zsh` in any terminal).
+Then open **cmux** or **Zed** terminal (or run `exec zsh` in any terminal).
 
 ## Remove config
 
@@ -29,9 +29,9 @@ chmod +x remove.sh
 
 | Option | What it does |
 |---|---|
-| `./remove.sh` | Restore shell + Ghostty backups, remove plugins/theme, clear p10k cache |
+| `./remove.sh` | Restore shell + cmux/Zed backups, remove plugins/theme, clear p10k cache |
 | `./remove.sh -y` | Same, no confirmation prompt |
-| `./remove.sh --purge` | Also uninstall Ghostty, Zed, and Nerd Font via Homebrew |
+| `./remove.sh --purge` | Also uninstall cmux, Zed, and Nerd Font via Homebrew |
 
 **Not removed:** Homebrew, Oh My Zsh, the cloned repo folder.
 
@@ -44,7 +44,8 @@ chmod +x remove.sh
 cp "$(ls -t ~/.zshrc.bak.* | head -1)" ~/.zshrc
 
 rm -f ~/.p10k.zsh
-rm -f ~/Library/Application\ Support/com.mitchellh.ghostty/config
+rm -f ~/.config/ghostty/config
+rm -f ~/.local/bin/cmux
 rm -f ~/.config/zed/settings.json
 rm -rf ~/.oh-my-zsh/custom/themes/powerlevel10k
 rm -rf ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
@@ -57,32 +58,36 @@ exec zsh
 ### What `setup.sh` does
 
 1. Installs **Homebrew** (if missing)
-2. Installs **Ghostty** via Homebrew cask (macOS)
+2. Installs **cmux** via Homebrew tap + cask (macOS)
 3. Installs **Zed** via Homebrew cask (macOS)
-4. Copies Ghostty config to `~/Library/Application Support/com.mitchellh.ghostty/config`
-5. Copies Zed settings to `~/.config/zed/settings.json`
-6. Installs **Oh My Zsh** (if missing)
-7. Clones **powerlevel10k**, **zsh-autosuggestions**, **zsh-syntax-highlighting**
-8. Backs up and installs `~/.zshrc`, `~/.zprofile`, `~/.p10k.zsh`
-9. Installs **MesloLGS Nerd Font** (for prompt icons in Ghostty + Zed)
+4. Copies terminal config to `~/.config/ghostty/config` (cmux reads this)
+5. Links **cmux CLI** to `~/.local/bin/cmux`
+6. Copies Zed settings to `~/.config/zed/settings.json`
+7. Installs **Oh My Zsh** (if missing)
+8. Clones **powerlevel10k**, **zsh-autosuggestions**, **zsh-syntax-highlighting**
+9. Backs up and installs `~/.zshrc`, `~/.zprofile`, `~/.p10k.zsh`
+10. Installs **MesloLGS Nerd Font** (for prompt icons in cmux + Zed)
 
 ### After setup
 
-Restart Zed or open a new terminal tab (`Ctrl+~`) so the Nerd Font loads.
+Restart cmux or Zed, or run `cmux reload-config` after editing terminal config.
 
-Set Ghostty font to **MesloLGS NF** in Ghostty settings if icons still show as boxes.
+Restart Zed terminal tab (`Ctrl+~`) so the Nerd Font loads there too.
 
 This repo is **terminal-only** — no dev tool PATH or completions (pnpm, bun, rust, grok, dex, etc.). Add those in a separate shell config on each machine if you need them.
 
 ---
 
-## Ghostty settings
+## cmux settings
 
-**Config file:** `~/Library/Application Support/com.mitchellh.ghostty/config`
+cmux is a Ghostty-based macOS terminal. Terminal rendering uses **Ghostty config format**.
+
+**Config file:** `~/.config/ghostty/config` (cmux checks this first)
 
 | Setting | Value |
 |---|---|
 | Theme | `Detuned` |
+| Font | `MesloLGS NF` (Powerlevel10k icons) |
 | Font size | `20` (thickened) |
 | Cursor | Bar, blinking |
 | Window | Maximized on launch |
@@ -93,7 +98,16 @@ This repo is **terminal-only** — no dev tool PATH or completions (pnpm, bun, r
 | Desktop notifications | Off |
 | Auto-update | Off |
 
-**Environment:** `TERM=xterm-ghostty`, `TERM_PROGRAM=ghostty`
+**cmux app settings** (shortcuts, sidebar, etc.) live separately in `~/.config/cmux/cmux.json` — not included in this repo.
+
+**Reload after edits:** `cmux reload-config` or `Cmd+Shift+,`
+
+**Install cmux manually:**
+
+```bash
+brew tap manaflow-ai/cmux
+brew install --cask cmux
+```
 
 ---
 
@@ -112,7 +126,7 @@ The repo ships a **terminal-only** Zed config (no API keys or agent settings):
 | Shell | `/bin/zsh` |
 | Working directory | Current project directory |
 
-**Why icons broke before:** Zed terminal had no `font_family` set, so it used a default mono font without Nerd Font glyphs. Ghostty and Zed each need their own font setting.
+**Why icons broke before:** Zed terminal had no `font_family` set. cmux and Zed each need their own font setting (cmux via `~/.config/ghostty/config`, Zed via `settings.json`).
 
 **Test icons in Zed terminal:**
 
@@ -223,7 +237,7 @@ terminal-dotfiles/
 ├── setup.sh               # One-command new device setup
 ├── remove.sh              # Undo setup / restore backups
 └── configs/
-    ├── ghostty-config     # Ghostty terminal settings
+    ├── cmux-terminal-config  # cmux terminal settings (Ghostty config format)
     ├── zed-settings.json  # Zed terminal font + shell settings
     ├── zshrc              # Main shell config
     ├── zprofile           # Login shell (Homebrew)
@@ -240,7 +254,7 @@ After editing configs on your machine:
 cd terminal-dotfiles
 
 # Update repo copies from live configs
-cp ~/Library/Application\ Support/com.mitchellh.ghostty/config configs/ghostty-config
+cp ~/.config/ghostty/config configs/cmux-terminal-config
 cp ~/.p10k.zsh configs/p10k.zsh
 # Edit configs/zed-settings.json for terminal-only Zed changes (no API keys)
 # Edit configs/zshrc and configs/zprofile directly — do not copy from ~/.zshrc
@@ -260,12 +274,6 @@ git pull
 
 ---
 
-## VS Code / Cursor terminal setting
+## VS Code / Cursor external terminal
 
-If using Cursor or VS Code with an external terminal:
-
-```json
-"terminal.explorerKind": "external"
-```
-
-This opens **Ghostty** instead of the built-in terminal panel.
+If using Cursor or VS Code with an external terminal, point it at **cmux** instead of the built-in panel. cmux does not replace Zed's integrated terminal — Zed still needs `terminal.font_family` in its own settings.

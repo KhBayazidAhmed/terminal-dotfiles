@@ -14,20 +14,29 @@ if ! command -v brew >/dev/null 2>&1; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-# Ghostty
-if [[ "$(uname)" == "Darwin" ]] && ! [[ -d "/Applications/Ghostty.app" ]]; then
-  echo "==> Installing Ghostty..."
-  brew install --cask ghostty || echo "    Install Ghostty manually: https://ghostty.org"
-fi
+# cmux (Ghostty-based terminal)
+if [[ "$(uname)" == "Darwin" ]]; then
+  if ! [[ -d "/Applications/cmux.app" ]]; then
+    echo "==> Installing cmux..."
+    brew tap manaflow-ai/cmux 2>/dev/null || true
+    brew install --cask cmux || echo "    Install cmux manually: https://cmux.com"
+  fi
 
-mkdir -p "$HOME/Library/Application Support/com.mitchellh.ghostty"
-GHOSTTY_CONFIG="$HOME/Library/Application Support/com.mitchellh.ghostty/config"
-if [[ -f "$GHOSTTY_CONFIG" ]]; then
-  cp "$GHOSTTY_CONFIG" "${GHOSTTY_CONFIG}.bak.$(date +%Y%m%d%H%M%S)"
-  echo "    Backed up Ghostty config"
+  CMUX_TERMINAL_CONFIG="$HOME/.config/ghostty/config"
+  mkdir -p "$(dirname "$CMUX_TERMINAL_CONFIG")"
+  if [[ -f "$CMUX_TERMINAL_CONFIG" ]]; then
+    cp "$CMUX_TERMINAL_CONFIG" "${CMUX_TERMINAL_CONFIG}.bak.$(date +%Y%m%d%H%M%S)"
+    echo "    Backed up cmux terminal config"
+  fi
+  cp "$CONFIGS/cmux-terminal-config" "$CMUX_TERMINAL_CONFIG"
+  echo "==> cmux terminal config installed (~/.config/ghostty/config)"
+
+  mkdir -p "$HOME/.local/bin"
+  if [[ -x "/Applications/cmux.app/Contents/Resources/bin/cmux" ]]; then
+    ln -sf "/Applications/cmux.app/Contents/Resources/bin/cmux" "$HOME/.local/bin/cmux"
+    echo "==> cmux CLI linked to ~/.local/bin/cmux"
+  fi
 fi
-cp "$CONFIGS/ghostty-config" "$GHOSTTY_CONFIG"
-echo "==> Ghostty config installed"
 
 # Zed
 if [[ "$(uname)" == "Darwin" ]]; then
@@ -106,9 +115,9 @@ if [[ "$(uname)" == "Darwin" ]]; then
     echo "==> Installing MesloLGS Nerd Font..."
     brew install --cask font-meslo-lg-nerd-font || true
   fi
-  echo "    MesloLGS NF is used by Ghostty + Zed terminal for Powerlevel10k icons."
+  echo "    MesloLGS NF is used by cmux + Zed terminal for Powerlevel10k icons."
 fi
 
 echo ""
-echo "Done! Open Ghostty or Zed terminal, or run: exec zsh"
+echo "Done! Open cmux or Zed terminal, or run: exec zsh"
 echo "Docs: $REPO_DIR/README.md"

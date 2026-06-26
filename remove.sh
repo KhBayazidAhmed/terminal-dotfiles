@@ -2,7 +2,7 @@
 set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-GHOSTTY_CONFIG="$HOME/Library/Application Support/com.mitchellh.ghostty/config"
+CMUX_TERMINAL_CONFIG="$HOME/.config/ghostty/config"
 ZED_SETTINGS="$HOME/.config/zed/settings.json"
 ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
 
@@ -21,7 +21,7 @@ Undo what setup.sh installed. Restores shell config backups when available.
 
 Options:
   -y, --yes   Skip confirmation prompt
-  --purge     Also uninstall Ghostty, Zed, and MesloLGS Nerd Font (Homebrew)
+  --purge     Also uninstall cmux, Zed, and MesloLGS Nerd Font (Homebrew)
   -h, --help  Show this help
 
 Does NOT uninstall Homebrew or Oh My Zsh.
@@ -38,11 +38,13 @@ done
 if [[ "$YES" != true ]]; then
   echo "This will:"
   echo "  - Restore ~/.zshrc, ~/.zprofile, ~/.p10k.zsh from backups (or delete if no backup)"
-  echo "  - Restore/remove Ghostty + Zed config"
+  echo "  - Restore/remove cmux terminal config"
+  echo "  - Restore/remove Zed config"
   echo "  - Remove powerlevel10k, zsh-autosuggestions, zsh-syntax-highlighting from Oh My Zsh"
   echo "  - Clear Powerlevel10k instant-prompt cache"
+  echo "  - Remove ~/.local/bin/cmux symlink"
   if [[ "$PURGE" == true ]]; then
-    echo "  - Uninstall Ghostty + Zed + MesloLGS Nerd Font (brew)"
+    echo "  - Uninstall cmux + Zed + MesloLGS Nerd Font (brew)"
   fi
   echo ""
   read -r -p "Continue? [y/N] " reply
@@ -69,15 +71,7 @@ restore_latest_backup "$HOME/.zshrc"
 restore_latest_backup "$HOME/.zprofile"
 restore_latest_backup "$HOME/.p10k.zsh"
 
-latest_ghostty="$(ls -t "${GHOSTTY_CONFIG}.bak."* 2>/dev/null | head -1 || true)"
-if [[ -n "$latest_ghostty" ]]; then
-  mkdir -p "$(dirname "$GHOSTTY_CONFIG")"
-  cp "$latest_ghostty" "$GHOSTTY_CONFIG"
-  echo "==> Restored Ghostty config from $(basename "$latest_ghostty")"
-elif [[ -f "$GHOSTTY_CONFIG" ]]; then
-  rm "$GHOSTTY_CONFIG"
-  echo "==> Removed Ghostty config (no backup found)"
-fi
+restore_latest_backup "$CMUX_TERMINAL_CONFIG"
 
 latest_zed="$(ls -t "${ZED_SETTINGS}.bak."* 2>/dev/null | head -1 || true)"
 if [[ -n "$latest_zed" ]]; then
@@ -101,6 +95,11 @@ remove_dir_if_exists "$ZSH_CUSTOM/themes/powerlevel10k" "powerlevel10k theme"
 remove_dir_if_exists "$ZSH_CUSTOM/plugins/zsh-autosuggestions" "zsh-autosuggestions"
 remove_dir_if_exists "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" "zsh-syntax-highlighting"
 
+if [[ -L "$HOME/.local/bin/cmux" ]]; then
+  rm "$HOME/.local/bin/cmux"
+  echo "==> Removed cmux CLI symlink"
+fi
+
 P10K_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${USER}.zsh"
 if [[ -f "$P10K_CACHE" ]]; then
   rm "$P10K_CACHE"
@@ -108,9 +107,9 @@ if [[ -f "$P10K_CACHE" ]]; then
 fi
 
 if [[ "$PURGE" == true ]] && command -v brew >/dev/null 2>&1; then
-  if brew list --cask ghostty &>/dev/null; then
-    brew uninstall --cask ghostty
-    echo "==> Uninstalled Ghostty"
+  if brew list --cask cmux &>/dev/null; then
+    brew uninstall --cask cmux
+    echo "==> Uninstalled cmux"
   fi
   if brew list --cask zed &>/dev/null; then
     brew uninstall --cask zed

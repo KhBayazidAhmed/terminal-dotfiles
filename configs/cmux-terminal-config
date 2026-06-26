@@ -9,6 +9,7 @@ theme = Detuned
 bold-is-bright = true
 cursor-style = bar
 cursor-style-blink = true
+font-family = MesloLGS NF
 font-size = 20
 font-thicken = true
 auto-update = off
