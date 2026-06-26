@@ -4,6 +4,3 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 #if [[ -o login && -o interactive && -t 1 && -z $TMUX ]] && command -v tmux >/dev/null 2>&1; then
 #  exec tmux -u new -As main -c "$HOME/Desktop/code_heaven"
 #fi
-
-# Added by OrbStack: command-line tools and integration
-source ~/.orbstack/shell/init.zsh 2>/dev/null || :

@@ -38,7 +38,6 @@ Install any tools you use that add PATH/completions in `configs/zshrc`:
 | rustup | `brew install rustup` |
 | grok CLI | Follow Grok installer |
 | dex | Your dex install method |
-| OrbStack | [orbstack.dev](https://orbstack.dev) — adds shell integration to `.zprofile` |
 
 Set Ghostty font to **MesloLGS Nerd Font** if prompt icons show as boxes.
 
@@ -70,7 +69,7 @@ Set Ghostty font to **MesloLGS Nerd Font** if prompt icons show as boxes.
 ### Startup order
 
 ```
-.zprofile  →  Homebrew + OrbStack
+.zprofile  →  Homebrew
      ↓
 .zshrc     →  p10k instant prompt → Oh My Zsh → plugins → ~/.p10k.zsh → tool completions
 ```
@@ -167,7 +166,7 @@ terminal-dotfiles/
 └── configs/
     ├── ghostty-config     # Ghostty terminal settings
     ├── zshrc              # Main shell config
-    ├── zprofile           # Login shell (Homebrew, OrbStack)
+    ├── zprofile           # Login shell (Homebrew)
     └── p10k.zsh           # Powerlevel10k prompt config
 ```
 
