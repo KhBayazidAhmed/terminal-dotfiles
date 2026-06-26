@@ -1,6 +1,6 @@
 # Terminal Dotfiles
 
-Personal terminal setup: **Ghostty** + **zsh** + **Oh My Zsh** + **Powerlevel10k** + suggestion plugins.
+Personal terminal setup: **Ghostty** + **Zed** + **zsh** + **Oh My Zsh** + **Powerlevel10k** + suggestion plugins.
 
 Repo: [github.com/KhBayazidAhmed/terminal-dotfiles](https://github.com/KhBayazidAhmed/terminal-dotfiles)
 
@@ -15,7 +15,7 @@ chmod +x setup.sh
 ./setup.sh
 ```
 
-Then open **Ghostty** (or run `exec zsh` in any terminal).
+Then open **Ghostty** or **Zed** terminal (or run `exec zsh` in any terminal).
 
 ## Remove config
 
@@ -31,7 +31,7 @@ chmod +x remove.sh
 |---|---|
 | `./remove.sh` | Restore shell + Ghostty backups, remove plugins/theme, clear p10k cache |
 | `./remove.sh -y` | Same, no confirmation prompt |
-| `./remove.sh --purge` | Also uninstall Ghostty app + Nerd Font via Homebrew |
+| `./remove.sh --purge` | Also uninstall Ghostty, Zed, and Nerd Font via Homebrew |
 
 **Not removed:** Homebrew, Oh My Zsh, the cloned repo folder.
 
@@ -45,6 +45,7 @@ cp "$(ls -t ~/.zshrc.bak.* | head -1)" ~/.zshrc
 
 rm -f ~/.p10k.zsh
 rm -f ~/Library/Application\ Support/com.mitchellh.ghostty/config
+rm -f ~/.config/zed/settings.json
 rm -rf ~/.oh-my-zsh/custom/themes/powerlevel10k
 rm -rf ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 rm -rf ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
@@ -57,15 +58,19 @@ exec zsh
 
 1. Installs **Homebrew** (if missing)
 2. Installs **Ghostty** via Homebrew cask (macOS)
-3. Copies Ghostty config to `~/Library/Application Support/com.mitchellh.ghostty/config`
-4. Installs **Oh My Zsh** (if missing)
-5. Clones **powerlevel10k**, **zsh-autosuggestions**, **zsh-syntax-highlighting**
-6. Backs up and installs `~/.zshrc`, `~/.zprofile`, `~/.p10k.zsh`
-7. Installs **MesloLGS Nerd Font** (for prompt icons)
+3. Installs **Zed** via Homebrew cask (macOS)
+4. Copies Ghostty config to `~/Library/Application Support/com.mitchellh.ghostty/config`
+5. Copies Zed settings to `~/.config/zed/settings.json`
+6. Installs **Oh My Zsh** (if missing)
+7. Clones **powerlevel10k**, **zsh-autosuggestions**, **zsh-syntax-highlighting**
+8. Backs up and installs `~/.zshrc`, `~/.zprofile`, `~/.p10k.zsh`
+9. Installs **MesloLGS Nerd Font** (for prompt icons in Ghostty + Zed)
 
 ### After setup
 
-Set Ghostty font to **MesloLGS Nerd Font** if prompt icons show as boxes.
+Restart Zed or open a new terminal tab (`Ctrl+~`) so the Nerd Font loads.
+
+Set Ghostty font to **MesloLGS NF** in Ghostty settings if icons still show as boxes.
 
 This repo is **terminal-only** — no dev tool PATH or completions (pnpm, bun, rust, grok, dex, etc.). Add those in a separate shell config on each machine if you need them.
 
@@ -89,6 +94,33 @@ This repo is **terminal-only** — no dev tool PATH or completions (pnpm, bun, r
 | Auto-update | Off |
 
 **Environment:** `TERM=xterm-ghostty`, `TERM_PROGRAM=ghostty`
+
+---
+
+## Zed settings
+
+**Config file:** `~/.config/zed/settings.json`
+
+The repo ships a **terminal-only** Zed config (no API keys or agent settings):
+
+| Setting | Value |
+|---|---|
+| Terminal font | `MesloLGS NF` (required for Powerlevel10k icons) |
+| Terminal font size | `16` |
+| Line height | `standard` (better for prompts / box drawing) |
+| Cursor | Bar, blinking |
+| Shell | `/bin/zsh` |
+| Working directory | Current project directory |
+
+**Why icons broke before:** Zed terminal had no `font_family` set, so it used a default mono font without Nerd Font glyphs. Ghostty and Zed each need their own font setting.
+
+**Test icons in Zed terminal:**
+
+```bash
+echo "󰀵  󰉋  󰘬"
+```
+
+Merge your own Zed editor/agent settings into `~/.config/zed/settings.json` after setup — the repo config only covers terminal essentials.
 
 ---
 
@@ -192,6 +224,7 @@ terminal-dotfiles/
 ├── remove.sh              # Undo setup / restore backups
 └── configs/
     ├── ghostty-config     # Ghostty terminal settings
+    ├── zed-settings.json  # Zed terminal font + shell settings
     ├── zshrc              # Main shell config
     ├── zprofile           # Login shell (Homebrew)
     └── p10k.zsh           # Powerlevel10k prompt config
@@ -209,8 +242,8 @@ cd terminal-dotfiles
 # Update repo copies from live configs
 cp ~/Library/Application\ Support/com.mitchellh.ghostty/config configs/ghostty-config
 cp ~/.p10k.zsh configs/p10k.zsh
+# Edit configs/zed-settings.json for terminal-only Zed changes (no API keys)
 # Edit configs/zshrc and configs/zprofile directly — do not copy from ~/.zshrc
-# (your live shell may have extra dev-tool PATH entries)
 
 git add -A
 git commit -m "Update terminal configs"

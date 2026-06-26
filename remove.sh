@@ -3,6 +3,7 @@ set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 GHOSTTY_CONFIG="$HOME/Library/Application Support/com.mitchellh.ghostty/config"
+ZED_SETTINGS="$HOME/.config/zed/settings.json"
 ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
 
 YES=false
@@ -20,7 +21,7 @@ Undo what setup.sh installed. Restores shell config backups when available.
 
 Options:
   -y, --yes   Skip confirmation prompt
-  --purge     Also uninstall Ghostty app and MesloLGS Nerd Font (Homebrew)
+  --purge     Also uninstall Ghostty, Zed, and MesloLGS Nerd Font (Homebrew)
   -h, --help  Show this help
 
 Does NOT uninstall Homebrew or Oh My Zsh.
@@ -37,11 +38,11 @@ done
 if [[ "$YES" != true ]]; then
   echo "This will:"
   echo "  - Restore ~/.zshrc, ~/.zprofile, ~/.p10k.zsh from backups (or delete if no backup)"
-  echo "  - Restore/remove Ghostty config"
+  echo "  - Restore/remove Ghostty + Zed config"
   echo "  - Remove powerlevel10k, zsh-autosuggestions, zsh-syntax-highlighting from Oh My Zsh"
   echo "  - Clear Powerlevel10k instant-prompt cache"
   if [[ "$PURGE" == true ]]; then
-    echo "  - Uninstall Ghostty + MesloLGS Nerd Font (brew)"
+    echo "  - Uninstall Ghostty + Zed + MesloLGS Nerd Font (brew)"
   fi
   echo ""
   read -r -p "Continue? [y/N] " reply
@@ -78,6 +79,16 @@ elif [[ -f "$GHOSTTY_CONFIG" ]]; then
   echo "==> Removed Ghostty config (no backup found)"
 fi
 
+latest_zed="$(ls -t "${ZED_SETTINGS}.bak."* 2>/dev/null | head -1 || true)"
+if [[ -n "$latest_zed" ]]; then
+  mkdir -p "$(dirname "$ZED_SETTINGS")"
+  cp "$latest_zed" "$ZED_SETTINGS"
+  echo "==> Restored Zed settings from $(basename "$latest_zed")"
+elif [[ -f "$ZED_SETTINGS" ]]; then
+  rm "$ZED_SETTINGS"
+  echo "==> Removed Zed settings (no backup found)"
+fi
+
 remove_dir_if_exists() {
   local dir="$1" label="$2"
   if [[ -d "$dir" ]]; then
@@ -100,6 +111,10 @@ if [[ "$PURGE" == true ]] && command -v brew >/dev/null 2>&1; then
   if brew list --cask ghostty &>/dev/null; then
     brew uninstall --cask ghostty
     echo "==> Uninstalled Ghostty"
+  fi
+  if brew list --cask zed &>/dev/null; then
+    brew uninstall --cask zed
+    echo "==> Uninstalled Zed"
   fi
   if brew list --cask font-meslo-lg-nerd-font &>/dev/null; then
     brew uninstall --cask font-meslo-lg-nerd-font

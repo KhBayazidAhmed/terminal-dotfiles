@@ -29,6 +29,36 @@ fi
 cp "$CONFIGS/ghostty-config" "$GHOSTTY_CONFIG"
 echo "==> Ghostty config installed"
 
+# Zed
+if [[ "$(uname)" == "Darwin" ]]; then
+  if ! [[ -d "/Applications/Zed.app" ]]; then
+    echo "==> Installing Zed..."
+    brew install --cask zed || echo "    Install Zed manually: https://zed.dev"
+  fi
+
+  ZED_CONFIG_DIR="$HOME/.config/zed"
+  ZED_SETTINGS="$ZED_CONFIG_DIR/settings.json"
+  mkdir -p "$ZED_CONFIG_DIR"
+  if [[ -f "$ZED_SETTINGS" ]]; then
+    cp "$ZED_SETTINGS" "${ZED_SETTINGS}.bak.$(date +%Y%m%d%H%M%S)"
+    echo "    Backed up Zed settings"
+    python3 - "$ZED_SETTINGS" "$CONFIGS/zed-settings.json" <<'PY'
+import json, sys
+from pathlib import Path
+
+target = Path(sys.argv[1])
+patch = json.loads(Path(sys.argv[2]).read_text())
+current = json.loads(target.read_text())
+current.update(patch)
+target.write_text(json.dumps(current, indent=2) + "\n")
+PY
+    echo "==> Zed terminal settings merged into existing config"
+  else
+    cp "$CONFIGS/zed-settings.json" "$ZED_SETTINGS"
+    echo "==> Zed settings installed (~/.config/zed/settings.json)"
+  fi
+fi
+
 # Oh My Zsh
 if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
   echo "==> Installing Oh My Zsh..."
@@ -76,9 +106,9 @@ if [[ "$(uname)" == "Darwin" ]]; then
     echo "==> Installing MesloLGS Nerd Font..."
     brew install --cask font-meslo-lg-nerd-font || true
   fi
-  echo "    Set Ghostty font to 'MesloLGS Nerd Font' if icons look broken."
+  echo "    MesloLGS NF is used by Ghostty + Zed terminal for Powerlevel10k icons."
 fi
 
 echo ""
-echo "Done! Open a new Ghostty window or run: exec zsh"
+echo "Done! Open Ghostty or Zed terminal, or run: exec zsh"
 echo "Docs: $REPO_DIR/README.md"
