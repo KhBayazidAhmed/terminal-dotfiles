@@ -2,9 +2,9 @@
   "autosave": "on_focus_change",
   "cursor_shape": "bar",
   "terminal": {
-    "font_family": "FiraCode Nerd Font",
-    "font_size": 14.0,
-    "line_height": "standard",
+    "font_family": "MesloLGS NF",
+    "font_size": 16.0,
+    "line_height": "comfortable",
     "cursor_shape": "bar",
     "blinking": "on",
     "shell": {

@@ -136,11 +136,11 @@ echo "==> zsh configs installed"
 
 # Nerd Font (required for Powerlevel10k icons)
 if [[ "$(uname)" == "Darwin" ]]; then
-  if ! brew list --cask font-fira-code-nerd-font &>/dev/null; then
-    echo "==> Installing FiraCode Nerd Font..."
-    brew install --cask font-fira-code-nerd-font || true
+  if ! brew list --cask font-meslo-lg-nerd-font &>/dev/null; then
+    echo "==> Installing MesloLGS Nerd Font..."
+    brew install --cask font-meslo-lg-nerd-font || true
   fi
-  echo "    FiraCode Nerd Font is used by cmux + Zed terminal (icons + ligatures)."
+  echo "    MesloLGS NF is used by cmux + Zed terminal for Powerlevel10k icons."
 fi
 
 echo ""

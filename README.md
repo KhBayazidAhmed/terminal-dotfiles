@@ -66,7 +66,7 @@ exec zsh
 7. Installs **Oh My Zsh** (if missing)
 8. Clones **powerlevel10k**, **zsh-autosuggestions**, **zsh-syntax-highlighting**
 9. Backs up and installs `~/.zshrc`, `~/.zprofile`, `~/.p10k.zsh`
-10. Installs **FiraCode Nerd Font** (prompt icons + ligatures in cmux + Zed)
+10. Installs **MesloLGS Nerd Font** (Powerlevel10k icons in cmux + Zed)
 
 ### After setup
 
@@ -87,8 +87,8 @@ cmux is a Ghostty-based macOS terminal. Terminal rendering uses **Ghostty config
 | Setting | Value |
 |---|---|
 | Theme | `Detuned` |
-| Font | `FiraCode Nerd Font` |
-| Font size | `14` |
+| Font | `MesloLGS NF` |
+| Font size | `18` |
 | Cursor | Bar, blinking |
 | Window | Maximized on launch |
 | Subtitle | Working directory |
@@ -119,9 +119,9 @@ The repo ships a **terminal-only** Zed config (no API keys or agent settings):
 
 | Setting | Value |
 |---|---|
-| Terminal font | `FiraCode Nerd Font` |
-| Terminal font size | `14` |
-| Line height | `standard` (better for prompts / box drawing) |
+| Terminal font | `MesloLGS NF` |
+| Terminal font size | `16` |
+| Line height | `comfortable` |
 | Cursor | Bar, blinking |
 | Shell | `/bin/zsh` |
 | Working directory | Current project directory |
